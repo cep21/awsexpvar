@@ -13,5 +13,10 @@ cache:
   directories:
     - $GOPATH/pkg/mod
 
+install:
+  - make setup_ci
+
 script:
-  - ./make.sh travis
+  - make build
+  - make test
+  - make lint 

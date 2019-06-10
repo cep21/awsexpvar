@@ -1,27 +1,18 @@
-deps:
-	# Do not check in /vendor
-	test ! -d 'vendor' || (echo "Failing checkout.  There is already a /vendor directory"; exit 1)
-	# Using vendor-only ensures that your gopkg.lock is correct.
-	# If you run into issues, execute `dep ensure` locally to populate
-	# the lock file correctly
-	dep ensure -vendor-only
+build:
+	go build ./...
 
+# Run unit tests
 test:
-	go test -race ./...
+	env "GORACE=halt_on_error=1" go test -v -race ./...
 
-# Easy way to reformat your code.  You should run `make fix` before you push
+# Format the code
 fix:
 	find . -iname '*.go' -not -path '*/vendor/*' -print0 | xargs -0 gofmt -s -w
 	find . -iname '*.go' -not -path '*/vendor/*' -print0 | xargs -0 goimports -w
 
+# Lint the code
 lint:
-	# Install is required for metalinter to work
-	go install ./...
-	# No parameters.  Configured with .metalinter.json file
-	gometalinter ./...
+	golangci-lint run
 
-clean:
-	rm -rf vendor
-
-bench:
-	go test -bench . -run=$$^  ./...
+setup_ci:
+	GO111MODULE=on go get github.com/golangci/golangci-lint/cmd/golangci-lint@1.17.1
