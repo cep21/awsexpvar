@@ -15,4 +15,4 @@ lint:
 	golangci-lint run
 
 setup_ci:
-	GO111MODULE=on go get github.com/golangci/golangci-lint/cmd/golangci-lint@1.17.1
+	GO111MODULE=on go get github.com/golangci/golangci-lint/cmd/golangci-lint@v1.17.1
