@@ -1,0 +1,17 @@
+language: go
+
+sudo: false
+
+env:
+  global:
+    - GO111MODULE=on
+
+go:
+  - "1.12"
+
+cache:
+  directories:
+    - $GOPATH/pkg/mod
+
+script:
+  - ./make.sh travis
