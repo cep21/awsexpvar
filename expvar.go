@@ -113,12 +113,8 @@ func (e *Expvar) ecs() interface{} {
 		return err
 	}
 	if asMap, ok := val.(map[string]interface{}); ok {
-		taskRole, err := e.taskRole()
-		if err != nil {
-			asMap["RoleArn"] = err.Error()
-		} else {
-			asMap["RoleArn"] = taskRole
-		}
+		taskRole := e.taskRole()
+		asMap["RoleArn"] = taskRole
 	}
 	return val
 }
@@ -154,19 +150,19 @@ func (e *Expvar) httpGet(base string) (*http.Response, error) {
 	return e.client().Do(req)
 }
 
-func (e *Expvar) taskRole() (string, error) {
+func (e *Expvar) taskRole() string {
 	credURL := os.Getenv("AWS_CONTAINER_CREDENTIALS_RELATIVE_URI")
 	if credURL == "" {
-		return "(no-relative-url-for-task-information)", nil
+		return "(no-relative-url-for-task-information)"
 	}
 	singleVal, err := e.single(taskRoleURL + credURL)
 	if err != nil {
-		return err.Error(), nil
+		return err.Error()
 	}
 	if asMap, ok := singleVal.(map[string]string); ok {
-		return asMap["RoleArn"], nil
+		return asMap["RoleArn"]
 	}
-	return "<invalid_single_value>", nil
+	return "<invalid_single_value>"
 }
 
 func (e *Expvar) single(base string) (interface{}, error) {
